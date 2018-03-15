@@ -74,6 +74,123 @@ $(document).ready(function () {
         }
     });
 
+    var price=[];
+    var total;
+    function getSum(total, num) {
+        return total + Math.round(num);
+    }
+    $('.getprice').on('DOMSubtreeModified',function(){
+        price.push(parseInt( $('.getprice').text()));
+         total=numbers.reduce(getSum, 0);
+    })
+
+
+
+    $(".plus").on('click',function(){
+
+        var cellar = 0;
+        var cell = $('.choose-meal .getprice').text();
+        cellar =cell.match(/\S+/g);
+        var c = 0;
+        for(i=0;i<cellar.length;i++){
+            c += parseInt(cellar[i]);
+        }
+        $(".gettotal").text(c)
+    });
+    /*
+    $('#plus').click(function () {
+        var plusspan  = $(this).next().next().attr('price');
+        var plusitem  = parseInt( $(this).prev().val());
+        plusitem++;
+        $(this).prev().val(plusitem);
+        var total = plusitem * plusspan;
+        $(this).next().next().text(total);
+        var cellar = 0;
+        var cell = $('.choose-meal .getprice').text();
+        cellar =cell.match(/\S+/g);
+        var c = 0;
+        for(i=0;i<cellar.length;i++){
+            c += parseInt(cellar[i]);
+        }
+        $(".gettotal").text(c)
+    });
+*/
+    $('#mins').click(function () {
+
+        var minsspan = $(this).next().attr('price');
+      var minsitem = parseInt($(this).prev().prev().val());
+      minsitem--;
+      if (minsitem <= 0) {
+
+          $(".choose-meal").hide();
+      } else {
+          $(this).prev().prev().val(minsitem);
+          var total = minsitem * minsspan;
+          $(this).next().text(total);
+
+      }
+
+  });
+
+
+    var Totalarray=[];
+    var subTotal=[];
+
+    $('.btn-confirm').click(function(){
+        var spanArray=document.getElementsByClassName("getname");
+        var numberArray=document.getElementsByClassName("getNumer");
+        var priceArray=document.getElementsByClassName("getprice");
+        var notes = $(".notes").val();
+        var room = $(".Rooms").prop("value");
+        var TotalPrice = parseFloat($(".gettotal").text());
+
+
+        for(var i=0;i<spanArray.length;i++){
+            Totalarray[i]=[spanArray[i].innerText,numberArray[i].value,priceArray[i].innerText];
+
+        }
+        var dateOrder=new Date().toLocaleString();
+        console.log(dateOrder);
+        subTotal.push(Totalarray);
+
+        subTotal.push({Room:room});
+        subTotal.push({Total:TotalPrice});
+        subTotal.push([dateOrder]);
+        subTotal.push({Notes:notes});
+
+        console.log(Totalarray);
+
+        console.log(subTotal);
+        $.ajax({
+            url:"http://localhost:9090/user/lists",
+            type:"GET",
+            data:{
+                Msg:subTotal
+    }});
+
+        // .done(function (res) {
+    //         $("#div2").append(res);
+    //
+    //         $("#name").val("");
+    //         fl
+    //     }).fail(function () {
+    //         alert("Error");
+    //     });
+
+        $(".container").prepend("<div class=\"alert alert-success done\" style='width: 350px;\n" +
+             "margin-left: 35%;\n" +
+             "text-align: center;' '>\n" +
+             "  <strong>Added Order!</strong>" +
+             "</div>");
+        setTimeout(function(){ $('.done').hide()}, 7000);
+        $(".table-resrv").empty();
+        $(".notes").val("");
+        $(".gettotal").text("");
+
+
+    });
+
+
 
     setInterval(function(){
 
