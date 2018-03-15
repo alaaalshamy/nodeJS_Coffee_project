@@ -6,6 +6,8 @@ var express=require('express');
 var server=express();
 var authRout=require("./controllers/auth");
 var productsRout=require("./controllers/products");
+var userRoutes=require('./controllers/user');
+var insertRoutes =require('./controllers/insert');
 var session=require('express-session');
 var flash=require("connect-flash");
 var mongoose=require("mongoose");
@@ -42,7 +44,8 @@ if(!(req.session.username && req.session.password))
 
 });
 
-
+server.use('/user',userRoutes);
+server.use('/user',insertRoutes);
 server.use('/products',productsRout);
 server.set('view engine','ejs');
 server.set('views','./views');
